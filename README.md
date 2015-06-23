@@ -5,6 +5,7 @@ This is a super simple javascript router implementation. Currently, it only hand
 Usage looks something like this:
 
 ```
+var http = require('http'),
 Rooter = require('rooter-router')
 
 router = new Rooter
@@ -20,7 +21,11 @@ router.add('/foo/new', function(req, res, url){
 })
 router.add('/foo/:id/edit', function(req, res, url){
   res.end('Editing ' + url.resource + ' ' + url.id)
-}
+})
+
+http.createServer(function (req, res) {
+  router.handle(req, res)
+}).listen(9001)
 ```
 
 Note that the URL object available to your callback includes a standard url.parse objec, in addition to elements such as resource, id, and verb (method)

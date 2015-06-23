@@ -10,6 +10,8 @@ Rooter.prototype.add = function (routeUrl, routeResponse) {
 }
 
 Rooter.prototype.handle = function (req, res) {
+  if (req.url === '/favicon.ico') return
+  console.log(req.url)
   var routeArray = []
   helper = url.parse(req.url)
   helper.resource = helper.pathname.split('/')[1]

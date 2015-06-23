@@ -1,7 +1,6 @@
 var url = require('url')
 
 var Rooter = function () {
-  this.subject = ''
   this.routeHandlers = {}
 }
 
@@ -16,7 +15,7 @@ Rooter.prototype.handle = function (req, res) {
   helper = url.parse(req.url)
   helper.resource = helper.pathname.split('/')[1]
   helper.id = helper.pathname.split('/')[2]
-  helper.verb = req.method
+  helper.myMethod = req.method
 
   if (req.url[req.url.length - 1] === '/') {
     routeArray = req.url.slice(0, -1).split('/')
@@ -37,7 +36,7 @@ Rooter.prototype.handle = function (req, res) {
     routeArray[2] = ':id'
     this.routeHandlers[routeArray.join('/').substring(1)](req, res, helper)
   } else {
-    res.end('Couldn\'t find an appropriate route')
+    res.end("Couldn't find an appropriate route")
   }
 }
 

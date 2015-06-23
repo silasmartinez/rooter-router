@@ -5,6 +5,10 @@ This is a super simple javascript router implementation. Currently, it only hand
 Usage looks something like this:
 
 ```
+Rooter = require('rooter-router')
+
+router = new Rooter
+
 router.add('/foo', function(req, res, url){
     res.end('some index')
 })

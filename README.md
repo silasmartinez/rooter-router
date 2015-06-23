@@ -28,4 +28,4 @@ http.createServer(function (req, res) {
 }).listen(9001)
 ```
 
-Note that the URL object available to your callback includes a standard url.parse objec, in addition to elements such as resource, id, and verb (method)
+Note that the URL object available to your callback includes a standard url.parse object, in addition to elements such as resource, id, and verb (method)

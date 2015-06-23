@@ -5,7 +5,7 @@ var Rooter = function () {
 }
 
 Rooter.prototype.add = function (routeUrl, routeResponse) {
-  this.routeHandlers[routeUrl.substring(1)] = routeResponse
+  this.routeHandlers[routeUrl] = routeResponse
 }
 
 Rooter.prototype.handle = function (req, res) {
@@ -15,7 +15,7 @@ Rooter.prototype.handle = function (req, res) {
   helper = url.parse(req.url)
   helper.resource = helper.pathname.split('/')[1]
   helper.id = helper.pathname.split('/')[2]
-  helper.myMethod = req.method
+  helper.verb = req.method
 
   if (req.url[req.url.length - 1] === '/') {
     routeArray = req.url.slice(0, -1).split('/')
@@ -24,17 +24,17 @@ Rooter.prototype.handle = function (req, res) {
   }
 
   if (routeArray.length === 2) {
-    this.routeHandlers[routeArray.join('/').substring(1)](req, res, helper)
+    this.routeHandlers[routeArray.join('/')](req, res, helper)
   } else if (routeArray.length === 3) {
     if (routeArray[2] === 'new') {
-      this.routeHandlers[routeArray.join('/').substring(1)](req, res, helper)
+      this.routeHandlers[routeArray.join('/')](req, res, helper)
     } else {
       routeArray[2] = ':id'
-      this.routeHandlers[routeArray.join('/').substring(1)](req, res, helper)
+      this.routeHandlers[routeArray.join('/')](req, res, helper)
     }
   } else if (routeArray.length === 4 && routeArray[3] === 'edit') {
     routeArray[2] = ':id'
-    this.routeHandlers[routeArray.join('/').substring(1)](req, res, helper)
+    this.routeHandlers[routeArray.join('/')](req, res, helper)
   } else {
     res.end("Couldn't find an appropriate route")
   }

@@ -7,7 +7,7 @@ describe('#add()', function () {
 
     testRouter.add('/things', function () {})
 
-    expect( testRouter.routeHandlers.things.toString() )
+    expect( testRouter.routeHandlers['/things'].toString() )
       .toEqual(function () {}.toString())
 
   })

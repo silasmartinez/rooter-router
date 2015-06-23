@@ -14,6 +14,7 @@ Rooter.prototype.handle = function (req, res) {
   helper = url.parse(req.url)
   helper.resource = helper.pathname.split('/')[1]
   helper.id = helper.pathname.split('/')[2]
+  helper.verb = req.method
 
   if (req.url[req.url.length - 1] === '/') {
     routeArray = req.url.slice(0, -1).split('/')

@@ -1,5 +1,5 @@
 {
-  "name": "Rooter-router",
+  "name": "rooter-router",
   "version": "0.0.1",
   "description": "Simple JavaScript Router",
   "main": "Rooter.js",

@@ -1,6 +1,10 @@
 # rooter-router
 
-This is a super simple javascript router implementation. Currently, it only handles the first level of resources (will not handle child resources)
+This is a super simple javascript router implementation.
+
+It handles multiple levels of resources and dynamic segments, and can handle method-specific routes.
+
+NOTE: If you elect to use method specific routers, you cannot also use general routes for that endpoint.
 
 Usage looks something like this:
 
@@ -11,16 +15,16 @@ Rooter = require('rooter-router')
 router = new Rooter
 
 router.add('/foo', function(req, res, url){
-    res.end('some index')
+    res.end('Index of ' + url.resources[1])
 })
 router.add('/foo/:id', function(req, res, url){
-  res.end('Got an instance of a foo: ' + url.id)
+  res.end('Got an instance of a foo: ' + url.dynamics.id)
 })
 router.add('/foo/new', function(req, res, url){
-  res.end('Create a foo?')
-})
-router.add('/foo/:id/edit', function(req, res, url){
-  res.end('Editing ' + url.resource + ' ' + url.id)
+  res.end('This must have been a get request')
+},'GET')
+router.add('/foo/:bar/baz', function(req, res, url){
+  res.end( url.resources[2] + '/' + url.dynamics.bar + '/' + url.resources[1])
 })
 
 http.createServer(function (req, res) {
@@ -28,4 +32,7 @@ http.createServer(function (req, res) {
 }).listen(9001)
 ```
 
-Note that the URL object available to your callback includes a standard url.parse object, in addition to elements such as resource, id, and verb (method)
+Note that the URL object available to your callback includes a standard url.parse object, in addition to elements such as:
+* resources (an array)
+* dynamics (an object, where the key name is the dynamic segment)
+*  verb (method)

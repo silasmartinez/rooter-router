@@ -1,6 +1,6 @@
 {
   "name": "rooter-router",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Simple JavaScript Router",
   "main": "Rooter.js",
   "scripts": {
@@ -10,15 +10,14 @@
     "ignore": ["spec/**", "node_modules/**"]
   },
   "keywords": [
-    "router, javascript, node"
+    "router",
+    "javascript",
+    "node"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/silasmartinez/Rooter-router.git"
   },
-  "keywords": [
-    "router"
-  ],
   "author": "Silas Martinez",
   "license": "MIT",
   "bugs": {

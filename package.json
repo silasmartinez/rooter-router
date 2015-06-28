@@ -1,13 +1,16 @@
 {
   "name": "rooter-router",
-  "version": "0.1.0",
+  "version": "0.1.01",
   "description": "Simple JavaScript Router",
   "main": "Rooter.js",
   "scripts": {
-    "test": "nodemon --exec standard & nodemon --exec jasmine"
+    "test": "jasmine"
   },
   "standard": {
-    "ignore": ["spec/**", "node_modules/**"]
+    "ignore": [
+      "spec/**",
+      "node_modules/**"
+    ]
   },
   "keywords": [
     "router",
@@ -23,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/silasmartinez/Rooter-router/issues"
   },
-  "homepage": "https://github.com/silasmartinez/Rooter-router"
+  "homepage": "https://github.com/silasmartinez/Rooter-router",
+  "dependencies": {
+    "supertest": "^1.0.1"
+  }
 }

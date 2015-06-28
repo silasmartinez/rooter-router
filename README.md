@@ -15,7 +15,7 @@ Rooter = require('rooter-router')
 router = new Rooter
 
 router.add('/foo', function(req, res, url){
-    res.end('Index of ' + url.resources[1])
+    res.end('Index for ' + url.resources[0])
 })
 router.add('/foo/:id', function(req, res, url){
   res.end('Got an instance of a foo: ' + url.dynamics.id)
@@ -24,7 +24,7 @@ router.add('/foo/new', function(req, res, url){
   res.end('This must have been a get request')
 },'GET')
 router.add('/foo/:bar/baz', function(req, res, url){
-  res.end( url.resources[2] + '/' + url.dynamics.bar + '/' + url.resources[1])
+  res.end( url.resources[0] + '/' + url.dynamics.bar + '/' + url.resources[1])
 })
 
 http.createServer(function (req, res) {
@@ -36,3 +36,5 @@ Note that the URL object available to your callback includes a standard url.pars
 * resources (an array)
 * dynamics (an object, where the key name is the dynamic segment)
 *  verb (method)
+
+Testing requires supertest (for testing only). Tests are presently pretty minimal - always room to grow them - but cover essential functions.

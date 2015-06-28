@@ -1,6 +1,6 @@
 {
   "name": "rooter-router",
-  "version": "0.1.01",
+  "version": "0.1.02",
   "description": "Simple JavaScript Router",
   "main": "Rooter.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "url": "https://github.com/silasmartinez/Rooter-router/issues"
   },
   "homepage": "https://github.com/silasmartinez/Rooter-router",
-  "dependencies": {
+  "devDependencies": {
     "supertest": "^1.0.1"
   }
 }

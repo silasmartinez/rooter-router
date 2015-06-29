@@ -52,13 +52,13 @@ describe("#handle()", function () {
         }
       })
   });
-  it("should generate a helperer object", function (done) {
-    testRouter.add('/helperer', function (req, res, helper) {
+  it("should generate a helper object", function (done) {
+    testRouter.add('/helper', function (req, res, helper) {
       res.end(helper.resources[0])
     })
     request(app)
-      .get('/helperer')
-      .expect('helperer')
+      .get('/helper')
+      .expect('helper')
       .end(function(err, res) {
         if (err) {
           done.fail(err)

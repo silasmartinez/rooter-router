@@ -2,6 +2,7 @@ var url = require('url')
 
 var Rooter = function () {
   this.routeHandlers = {}
+  this.matchObjs = []
 }
 
 Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
@@ -37,12 +38,50 @@ Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
   return this
 }
 
+Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
+  var matches = []
+  for (route in this.routeHandlers) {
+    var matchObj = {
+      'namedRoute': route,
+      'matchRate': reqUrlArray.length
+    }
+
+    if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength) && ( this.routeHandlers[route].method === reqMethod || !this.routeHandlers[route].method)) {
+
+      var routeArray = route.split('/')
+      var isMatch = true
+      reqUrlArray.forEach(function (ele, ind) {
+        if (ind > 0) {
+          if (routeArray[ind][0] === ':') {
+            matchObj.matchRate += 1
+          } else if (ele === routeArray[ind]) {
+            matchObj.matchRate += 2
+          } else {
+            isMatch = false
+          }
+        }
+      })
+      if (isMatch) {
+        matches.push(matchObj)
+      }
+    }
+  }
+
+  if (matches.length > 0) {
+    return matches.reduce(function (a, cur) {
+      return a.matchRate > cur.matchRate ? a : cur
+    })
+  } else {
+    return false
+  }
+}
+
 Rooter.prototype.handle = function (req, res) {
   var path = url.parse(req.url).pathname
   var reqUrlArray = []
   var handled = false
+  var helper = url.parse(req.url)
 
-  helper = url.parse(req.url)
   helper.resources = []
   helper.dynamics = {}
   helper.verb = req.method
@@ -52,32 +91,28 @@ Rooter.prototype.handle = function (req, res) {
   }
   reqUrlArray = path.split('/')
 
-  for (route in this.routeHandlers) {
-    if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength)
-      && ( this.routeHandlers[route].method === req.method
-      || !this.routeHandlers[route].method)) {
-      var routeArray = route.split('/')
-      var isMatch = true
-      reqUrlArray.forEach(function (ele, ind) {
-        if (ind > 0) {
-          if (routeArray[ind][0] === ':') {
-            helper.dynamics[routeArray[ind].substring(1)] = ele
-          } else if (ele === routeArray[ind]) {
-            helper.resources.push(ele)
-          } else {
-            isMatch = false
-          }
+  var chosenRoute = this.getBestMatch(reqUrlArray, req.method).namedRoute
+
+  if (chosenRoute) {
+    var routeArray = chosenRoute.split('/')
+    reqUrlArray.forEach(function (ele, ind) {
+      if (ind > 0) {
+        if (routeArray[ind][0] === ':') {
+          helper.dynamics[routeArray[ind].substring(1)] = ele
+        } else if (ele === routeArray[ind]) {
+          helper.resources.push(ele)
+        } else {
+          isMatch = false
         }
-      })
-      if (isMatch) {
-        helper.routeMatched = route
-        this.routeHandlers[route].func(req, res, helper)
-        handled = true
-        return
       }
-    }
-  }
-  if (!handled) {
+    })
+
+    helper.routeMatched = chosenRoute
+    this.routeHandlers[route].func(req, res, helper)
+    handled = true
+    return
+
+  } else {
     res.writeHead(404, {'Content-Type': 'text/plain'})
     res.write('404: Resource not found\n')
     res.write(path + ' (' + req.method + ')')

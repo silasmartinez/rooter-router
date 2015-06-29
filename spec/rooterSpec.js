@@ -67,4 +67,22 @@ describe("#handle()", function () {
         }
       })
   });
+  it("should prefer a more specific route", function (done) {
+    testRouter.add('/foo/:bar', function (req, res, help) {
+      res.end(help.routeMatched)
+    })
+    testRouter.add('/foo/baz', function (req, res, help) {
+      res.end(help.routeMatched)
+    })
+    request(app)
+      .get('/foo/baz')
+      .expect('/foo/baz')
+      .end(function(err, res) {
+        if (err) {
+          done.fail(err)
+        } else {
+          done()
+        }
+      })
+  });
 });

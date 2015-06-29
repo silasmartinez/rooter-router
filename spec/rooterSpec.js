@@ -52,13 +52,13 @@ describe("#handle()", function () {
         }
       })
   });
-  it("should generate a helper object", function (done) {
-    testRouter.add('/helper', function (req, res, help) {
-      res.end(help.resources[0])
+  it("should generate a helperer object", function (done) {
+    testRouter.add('/helperer', function (req, res, helper) {
+      res.end(helper.resources[0])
     })
     request(app)
-      .get('/helper')
-      .expect('helper')
+      .get('/helperer')
+      .expect('helperer')
       .end(function(err, res) {
         if (err) {
           done.fail(err)
@@ -68,15 +68,30 @@ describe("#handle()", function () {
       })
   });
   it("should prefer a more specific route", function (done) {
-    testRouter.add('/foo/:bar', function (req, res, help) {
-      res.end(help.routeMatched)
+    testRouter.add('/foo/:bar', function (req, res, helper) {
+      res.end(helper.routeMatched)
     })
-    testRouter.add('/foo/baz', function (req, res, help) {
-      res.end(help.routeMatched)
+      .add('/foo/baz', function (req, res, helper) {
+      res.end(helper.routeMatched)
     })
     request(app)
       .get('/foo/baz')
       .expect('/foo/baz')
+      .end(function(err, res) {
+        if (err) {
+          done.fail(err)
+        } else {
+          done()
+        }
+      })
+  });
+  it("should handle multiple dynamic segments", function (done) {
+    testRouter.add('/foo/:bar/baz/:fa', function (req, res, helper) {
+      res.end(helper.dynamics.bar + helper.dynamics.fa)
+    })
+    request(app)
+      .get('/foo/stuff/baz/nthings')
+      .expect('stuffnthings')
       .end(function(err, res) {
         if (err) {
           done.fail(err)

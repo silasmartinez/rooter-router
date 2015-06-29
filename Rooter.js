@@ -86,9 +86,7 @@ Rooter.prototype.handle = function (req, res) {
   if (path[path.length - 1] === '/') {
     path = path.slice(0, -1)
   }
-
   var reqUrlArray = path.split('/')
-
   var chosenRoute = this.getBestMatch(reqUrlArray, req.method).namedRoute
 
   if (chosenRoute) {
@@ -104,11 +102,9 @@ Rooter.prototype.handle = function (req, res) {
         }
       }
     })
-
     helper.routeMatched = chosenRoute
     this.routeHandlers[route].func(req, res, helper)
     return
-
   } else {
     res.writeHead(404, {'Content-Type': 'text/plain'})
     res.write('404: Resource not found\n')

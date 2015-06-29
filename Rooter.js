@@ -79,7 +79,6 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
 Rooter.prototype.handle = function (req, res) {
   var path = url.parse(req.url).pathname
   var reqUrlArray = []
-  var handled = false
   var helper = url.parse(req.url)
 
   helper.resources = []
@@ -109,7 +108,6 @@ Rooter.prototype.handle = function (req, res) {
 
     helper.routeMatched = chosenRoute
     this.routeHandlers[route].func(req, res, helper)
-    handled = true
     return
 
   } else {

@@ -29,7 +29,7 @@ describe('#add()', function () {
 describe("#handle()", function () {
   it("should 404 for an unknown route", function (done) {
     request(app)
-      .get('/fooBarBaz')
+      .get('/thisroutedoesnotexist')
       .expect(404)
       .end(function(err, res) {
         if (err) {
@@ -53,12 +53,12 @@ describe("#handle()", function () {
       })
   });
   it("should generate a helper object", function (done) {
-    testRouter.add('/helper', function (req, res, helper) {
+    testRouter.add('/helptest', function (req, res, helper) {
       res.end(helper.resources[0])
     })
     request(app)
-      .get('/helper')
-      .expect('helper')
+      .get('/helptest')
+      .expect('helptest')
       .end(function(err, res) {
         if (err) {
           done.fail(err)

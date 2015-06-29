@@ -2,7 +2,6 @@ var url = require('url')
 
 var Rooter = function () {
   this.routeHandlers = {}
-  this.matchObjs = []
 }
 
 Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
@@ -41,11 +40,8 @@ Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
 Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
   var matches = []
   for (route in this.routeHandlers) {
-    var matchObj = {
-      'namedRoute': route,
-      'matchRate': reqUrlArray.length
-    }
-
+    var matchObj = { 'namedRoute': route,
+                     'matchRate': reqUrlArray.length }
     if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength) && ( this.routeHandlers[route].method === reqMethod || !this.routeHandlers[route].method)) {
 
       var routeArray = route.split('/')
@@ -61,12 +57,9 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
           }
         }
       })
-      if (isMatch) {
-        matches.push(matchObj)
-      }
+      isMatch && matches.push(matchObj)
     }
   }
-
   if (matches.length > 0) {
     return matches.reduce(function (a, cur) {
       return a.matchRate > cur.matchRate ? a : cur
@@ -78,18 +71,16 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
 
 Rooter.prototype.handle = function (req, res) {
   var path = url.parse(req.url).pathname
-  var helper = url.parse(req.url)
-    helper.resources = []
-    helper.dynamics = {}
-    helper.verb = req.method
-
   if (path[path.length - 1] === '/') {
     path = path.slice(0, -1)
   }
   var reqUrlArray = path.split('/')
   var chosenRoute = this.getBestMatch(reqUrlArray, req.method).namedRoute
-
   if (chosenRoute) {
+    var helper = url.parse(req.url)
+    helper.resources = []
+    helper.dynamics = {}
+    helper.verb = req.method
     var routeArray = chosenRoute.split('/')
     reqUrlArray.forEach(function (ele, ind) {
       if (ind > 0) {

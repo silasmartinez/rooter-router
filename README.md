@@ -35,6 +35,7 @@ http.createServer(function (req, res) {
 Note that the URL object available to your callback includes a standard url.parse object, in addition to elements such as:
 * resources (an array)
 * dynamics (an object, where the key name is the dynamic segment)
-*  verb (method)
+* verb (method)
+* matchedRoute
 
-Testing requires supertest (for testing only). Tests are presently pretty minimal - always room to grow them - but cover essential functions.
+Testing requires supertest (for testing only). Tests cover essential functions.

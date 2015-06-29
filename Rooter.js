@@ -78,17 +78,16 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
 
 Rooter.prototype.handle = function (req, res) {
   var path = url.parse(req.url).pathname
-  var reqUrlArray = []
   var helper = url.parse(req.url)
-
-  helper.resources = []
-  helper.dynamics = {}
-  helper.verb = req.method
+    helper.resources = []
+    helper.dynamics = {}
+    helper.verb = req.method
 
   if (path[path.length - 1] === '/') {
     path = path.slice(0, -1)
   }
-  reqUrlArray = path.split('/')
+
+  var reqUrlArray = path.split('/')
 
   var chosenRoute = this.getBestMatch(reqUrlArray, req.method).namedRoute
 

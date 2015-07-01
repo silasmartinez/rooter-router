@@ -9,18 +9,23 @@ NOTE: If you elect to use method specific routers, you cannot also use general r
 Splats: Rooter-router now has a basic splats implementation. Note that splats are treated as less specific, which has the following repercussions:
 
 Given:
-```testRouter.add('/public/*', function (req, res, helper) {
+
+```
+testRouter.add('/public/*', function (req, res, helper) {
       res.end(helper.routeMatched)
     })
   .add('/public/resource/:test', function (req, res, helper) {
       res.end(helper.dynamics.test)
-    })```
+    })
+```
 
 the test:
 
-```request(app)
+```
+request(app)
       .get('/public/resource/foobar')
-      .expect('foobar’)```
+      .expect('foobar’)
+```
 
 passes.
 

@@ -24,6 +24,7 @@ Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
   }
   this.routeHandlers[routeUrl].func = routeResponse
   var dynamicCheck = []
+  var isSplat
   routeUrl.split('/').forEach(function (member, index) {
     if (member[0] === ':') {
       if (dynamicCheck.indexOf(member) < 0) {
@@ -31,17 +32,22 @@ Rooter.prototype.add = function (routeUrl, routeResponse, routeMethod) {
       } else {
         throw new Error('route {' + routeUrl + '} contains duplicate dynamic segment {' + member + '}')
       }
+    } else if (member[member.length - 1] === '*') {
+      isSplat = true
     }
   })
+  if (isSplat) this.routeHandlers[routeUrl].isSplat = true
   this.routeHandlers[routeUrl].hasLength = routeUrl.split('/').length
   return this
 }
 
-Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
+Rooter.prototype._getBestMatch = function (reqUrlArray, reqMethod) {
   var matches = []
   for (route in this.routeHandlers) {
-    var matchObj = { 'namedRoute': route,
-                     'matchRate': reqUrlArray.length }
+    var matchObj = {
+      'namedRoute': route,
+      'matchRate': reqUrlArray.length
+    }
     if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength) && ( this.routeHandlers[route].method === reqMethod || !this.routeHandlers[route].method)) {
 
       var routeArray = route.split('/')
@@ -65,8 +71,34 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
       return a.matchRate > cur.matchRate ? a : cur
     })
   } else {
-    return false
+    var splatResults = this._checkSplats(reqUrlArray)
+    if (splatResults) {
+      console.log(splatResults)
+      return splatResults
+    } else {
+      return false
+    }
   }
+}
+
+Rooter.prototype._checkSplats = function (reqUrlArray) {
+  for (splat in this.routeHandlers) {
+    var matchSplat = true,
+      splatArr = splat.split('/')
+    if (this.routeHandlers[splat].isSplat) {
+      for (var i = 1; i < splatArr.length - 1; i++) {
+        if (splatArr[i] !== reqUrlArray[i]) {
+          matchSplat = false
+        }
+      }
+      if (matchSplat) {
+
+        console.log('matched: ' + splat)
+        return { 'namedRoute' : splat}
+      }
+    }
+  }
+  return false
 }
 
 Rooter.prototype.handle = function (req, res) {
@@ -75,26 +107,31 @@ Rooter.prototype.handle = function (req, res) {
     path = path.slice(0, -1)
   }
   var reqUrlArray = path.split('/')
-  var chosenRoute = this.getBestMatch(reqUrlArray, req.method).namedRoute
+  console.log('matching: ' + path)
+  var chosenRoute = this._getBestMatch(reqUrlArray, req.method).namedRoute
   if (chosenRoute) {
     var helper = url.parse(req.url)
-    helper.resources = []
-    helper.dynamics = {}
     helper.verb = req.method
-    var routeArray = chosenRoute.split('/')
-    reqUrlArray.forEach(function (ele, ind) {
-      if (ind > 0) {
-        if (routeArray[ind][0] === ':') {
-          helper.dynamics[routeArray[ind].substring(1)] = ele
-        } else if (ele === routeArray[ind]) {
-          helper.resources.push(ele)
-        } else {
-          isMatch = false
+    if (! this.routeHandlers[chosenRoute].isSplat) {
+      helper.resources = []
+      helper.dynamics = {}
+      var routeArray = chosenRoute.split('/')
+      reqUrlArray.forEach(function (ele, ind) {
+        if (ind > 0) {
+          if (routeArray[ind][0] === ':') {
+            helper.dynamics[routeArray[ind].substring(1)] = ele
+          } else if (ele === routeArray[ind]) {
+            helper.resources.push(ele)
+          } else {
+            isMatch = false
+          }
         }
-      }
-    })
+      })
+    } else {
+      helper.isSplat = true
+    }
     helper.routeMatched = chosenRoute
-    this.routeHandlers[route].func(req, res, helper)
+    this.routeHandlers[chosenRoute].func(req, res, helper)
     return
   } else {
     res.writeHead(404, {'Content-Type': 'text/plain'})

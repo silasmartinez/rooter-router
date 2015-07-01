@@ -100,4 +100,19 @@ describe("#handle()", function () {
         }
       })
   });
+  it("should handle splats", function (done) {
+    testRouter.add('/public/*', function (req, res, helper) {
+      res.end(helper.routeMatched)
+    })
+    request(app)
+      .get('/public/styles/test.css')
+      .expect('/public/*')
+      .end(function(err, res) {
+        if (err) {
+          done.fail(err)
+        } else {
+          done()
+        }
+      })
+  });
 });

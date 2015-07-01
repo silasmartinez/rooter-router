@@ -1,15 +1,14 @@
 # rooter-router
 
-This is a super simple javascript router implementation.
+This is a basic javascript router implementation. It doesn't do regex, and it is strongly biased toward specificity - routes are matched to their most exact match.
 
 It handles multiple levels of resources and dynamic segments, and can handle method-specific routes.
 
 NOTE: If you elect to use method specific routers, you cannot also use general routes for that endpoint.
 
-Splats: Rooter-router now has a basic splats implementation. Note that splats are treated as less specific, which has the following repercussions:
+Splats: Rooter-router has a basic splats implementation. Note that splats are always treated as less specific, which has the following repercussions:
 
 Given:
-
 ```
 testRouter.add('/public/*', function (req, res, helper) {
       res.end(helper.routeMatched)
@@ -27,7 +26,23 @@ request(app)
       .expect('foobar’)
 ```
 
-passes.
+passes. In addition, a less specific splat will not overrule a more specific splat. Hence:
+
+```
+testRouter.add('/public/*', function (req, res, helper) {
+      res.end(helper.routeMatched)
+    })
+  .add('/public/special/*', function (req, res, helper) {
+      res.end(helper.dynamics.test)
+    })
+```
+with a test of:
+```
+request(app)
+      .get('/public/special/foo/bar/baz')
+      .expect('/public/special/*’)
+```
+will also pass. Note that the route definitions above use method chaining, which is supported when adding routes.
 
 Usage looks something like this:
 
@@ -61,4 +76,4 @@ Note that the URL object available to your callback includes a standard url.pars
 * verb (method)
 * matchedRoute
 
-Testing requires supertest (for testing only). Tests cover essential functions.
+Testing (jasmine) requires supertest (for testing only). Tests cover essential functions, and are visible at specs/rooterSpec.js

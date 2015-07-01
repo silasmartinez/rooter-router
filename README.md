@@ -6,6 +6,24 @@ It handles multiple levels of resources and dynamic segments, and can handle met
 
 NOTE: If you elect to use method specific routers, you cannot also use general routes for that endpoint.
 
+Splats: Rooter-router now has a basic splats implementation. Note that splats are treated as less specific, which has the following repercussions:
+
+Given:
+```testRouter.add('/public/*', function (req, res, helper) {
+      res.end(helper.routeMatched)
+    })
+  .add('/public/resource/:test', function (req, res, helper) {
+      res.end(helper.dynamics.test)
+    })```
+
+the test:
+
+```request(app)
+      .get('/public/resource/foobar')
+      .expect('foobar’)```
+
+passes.
+
 Usage looks something like this:
 
 ```

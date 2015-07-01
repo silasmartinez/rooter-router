@@ -115,4 +115,34 @@ describe("#handle()", function () {
         }
       })
   });
+  it("should not treat splats as most specific", function (done) {
+    testRouter.add('/public/resource/:test', function (req, res, helper) {
+      res.end(helper.dynamics.test)
+    })
+    request(app)
+      .get('/public/resource/foobar')
+      .expect('foobar')
+      .end(function(err, res) {
+        if (err) {
+          done.fail(err)
+        } else {
+          done()
+        }
+      })
+  });
+  it("should still prefer the most specific splat", function (done) {
+    testRouter.add('/public/special/*', function (req, res, helper) {
+      res.end(helper.routeMatched)
+    })
+    request(app)
+      .get('/public/special/foo/bar/baz')
+      .expect('/public/special/*')
+      .end(function(err, res) {
+        if (err) {
+          done.fail(err)
+        } else {
+          done()
+        }
+      })
+  });
 });

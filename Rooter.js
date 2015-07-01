@@ -73,7 +73,6 @@ Rooter.prototype._getBestMatch = function (reqUrlArray, reqMethod) {
   } else {
     var splatResults = this._checkSplats(reqUrlArray)
     if (splatResults) {
-      console.log(splatResults)
       return splatResults
     } else {
       return false
@@ -82,6 +81,7 @@ Rooter.prototype._getBestMatch = function (reqUrlArray, reqMethod) {
 }
 
 Rooter.prototype._checkSplats = function (reqUrlArray) {
+  var splatMatchArr = []
   for (splat in this.routeHandlers) {
     var matchSplat = true,
       splatArr = splat.split('/')
@@ -92,13 +92,18 @@ Rooter.prototype._checkSplats = function (reqUrlArray) {
         }
       }
       if (matchSplat) {
-
-        console.log('matched: ' + splat)
-        return { 'namedRoute' : splat}
+        splatMatchArr.push( { 'namedRoute' : splat,
+                'specificity' : splatArr.length} )
       }
     }
   }
-  return false
+  if (splatMatchArr.length > 0) {
+    return splatMatchArr.reduce(function (a, cur) {
+      return a.specificity > cur.specificity ? a : cur
+    })
+  } else {
+    return false
+  }
 }
 
 Rooter.prototype.handle = function (req, res) {
@@ -107,7 +112,6 @@ Rooter.prototype.handle = function (req, res) {
     path = path.slice(0, -1)
   }
   var reqUrlArray = path.split('/')
-  console.log('matching: ' + path)
   var chosenRoute = this._getBestMatch(reqUrlArray, req.method).namedRoute
   if (chosenRoute) {
     var helper = url.parse(req.url)

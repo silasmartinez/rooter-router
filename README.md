@@ -4,7 +4,7 @@ This is a basic javascript router implementation. It doesn't do regex, and it is
 
 It handles multiple levels of resources and dynamic segments, and can handle method-specific routes.
 
-NOTE: If you elect to use method specific routers, you cannot also use general routes for that endpoint.
+NOTE: If you elect to use method specific routes, you cannot also use general routes for that endpoint.
 
 Splats: Rooter-router has a basic splats implementation. Note that splats are always treated as less specific, which has the following repercussions:
 
@@ -33,7 +33,7 @@ testRouter.add('/public/*', function (req, res, helper) {
       res.end(helper.routeMatched)
     })
   .add('/public/special/*', function (req, res, helper) {
-      res.end(helper.dynamics.test)
+      res.end(helper.routeMatched)
     })
 ```
 with a test of:

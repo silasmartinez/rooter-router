@@ -1,6 +1,6 @@
 # rooter-router
 
-This is a basic javascript router implementation. It doesn't do regex, and it is strongly biased toward specificity - routes are matched to their most exact match.
+This is a basic javascript router implementation. It doesn't do regex, and it is strongly biased toward specificity - routes are matched to their most specific match.
 
 It handles multiple levels of resources and dynamic segments, and can handle method-specific routes.
 

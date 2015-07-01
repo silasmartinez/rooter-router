@@ -6,7 +6,7 @@ It handles multiple levels of resources and dynamic segments, and can handle met
 
 NOTE: If you elect to use method specific routers, you cannot also use general routes for that endpoint.
 
-Splats: Rooter-router now has a basic splats implementation. Note that splats are always treated as less specific, which has the following repercussions:
+Splats: Rooter-router has a basic splats implementation. Note that splats are always treated as less specific, which has the following repercussions:
 ```
 testRouter.add('/public/*', function (req, res, helper) {
       res.end(helper.routeMatched)
@@ -24,7 +24,7 @@ request(app)
       .expect('foobar’)
 ```
 
-passes. In addition, a less specific route will not overrule a less specific route. Hence:
+passes. In addition, a less specific splat will not overrule a more specific splat. Hence:
 
 ```
 testRouter.add('/public/*', function (req, res, helper) {
@@ -40,7 +40,7 @@ request(app)
       .get('/public/special/foo/bar/baz')
       .expect('/public/special/*’)
 ```
-will also pass.
+will also pass. Note that the route definitions above use method chaining, which is supported when adding routes.
 
 Usage looks something like this:
 
@@ -74,4 +74,4 @@ Note that the URL object available to your callback includes a standard url.pars
 * verb (method)
 * matchedRoute
 
-Testing requires supertest (for testing only). Tests cover essential functions.
+Testing (jasmine) requires supertest (for testing only). Tests cover essential functions, and are visible at specs/rooterSpec.js

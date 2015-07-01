@@ -41,9 +41,8 @@ Rooter.prototype.getBestMatch = function (reqUrlArray, reqMethod) {
   var matches = []
   for (route in this.routeHandlers) {
     var matchObj = { 'namedRoute': route,
-                     'matchRate': reqUrlArray.length }
-    if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength) && ( this.routeHandlers[route].method === reqMethod || !this.routeHandlers[route].method)) {
-
+    'matchRate': reqUrlArray.length }
+    if (reqUrlArray.length === parseInt(this.routeHandlers[route].hasLength) && (this.routeHandlers[route].method === reqMethod || !this.routeHandlers[route].method)) {
       var routeArray = route.split('/')
       var isMatch = true
       reqUrlArray.forEach(function (ele, ind) {
@@ -94,7 +93,7 @@ Rooter.prototype.handle = function (req, res) {
       }
     })
     helper.routeMatched = chosenRoute
-    this.routeHandlers[route].func(req, res, helper)
+    this.routeHandlers[chosenRoute].func(req, res, helper)
     return
   } else {
     res.writeHead(404, {'Content-Type': 'text/plain'})

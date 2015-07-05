@@ -1,6 +1,6 @@
 # rooter-router
 
-This is a basic javascript router implementation. It doesn't do regex, and it is strongly biased toward specificity - routes are matched to their most specific match.
+This is a basic javascript router implementation. It doesn't do regex, and it is strongly biased toward specificity - routes are matched to their most specific equivalent.
 
 It handles multiple levels of resources and dynamic segments, and can handle method-specific routes.
 
@@ -75,5 +75,7 @@ Note that the URL object available to your callback includes a standard url.pars
 * dynamics (an object, where the key name is the dynamic segment)
 * verb (method)
 * matchedRoute
+
+However, resources and dynamics are not presently generated for splats.
 
 Testing (jasmine) requires supertest (for testing only). Tests cover essential functions, and are visible at specs/rooterSpec.js

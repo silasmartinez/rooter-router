@@ -108,7 +108,7 @@ Rooter.prototype._checkSplats = function (reqUrlArray) {
 
 Rooter.prototype.handle = function (req, res) {
   var path = url.parse(req.url).pathname
-  if (path[path.length - 1] === '/') {
+  if (path[path.length - 1] === '/' && path !== '/') {
     path = path.slice(0, -1)
   }
   var reqUrlArray = path.split('/')
